@@ -1,6 +1,5 @@
-// @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,6 +9,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setEnabledSystemUIOverlays([]);
+
     return MaterialApp(
       title: 'Blayer',
       theme: ThemeData(
@@ -19,7 +21,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class MyHomePage extends StatefulWidget {
 
   @override
@@ -27,40 +28,56 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Color color = Colors.blue;
+  Color color = Colors.white;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gesture Director'),
-        centerTitle: true,
-      ),
-
 
       body: Center(
         child: GestureDetector(
-        onTap: (){
-          setState(() {
-            color = Colors.green;
-          });
-        },
-        onDoubleTap: (){
-          setState(() {
-            color = Colors.red;
-          });
-        },
-        onLongPress: (){
-          setState(() {
-            color = Colors.black;
-          });
-        },
+          onTap: (){
+            setState(() {
+              color = Colors.redAccent;
+            });
+          },
+          onDoubleTap: (){
+            setState(() {
+              color = Colors.orangeAccent;
+            });
+          },
+          onHorizontalDragStart: (DragStartDetails details){
+            setState(() {
+              color = Colors.yellowAccent;
+            });
+          },
+          onHorizontalDragEnd: (DragEndDetails details){
+            setState(() {
+              color = Colors.greenAccent;
+            });
+          },
+          onVerticalDragStart: (DragStartDetails details){
+            setState(() {
+              color = Colors.blueAccent;
+            });
+          },
+          onVerticalDragEnd: (DragEndDetails details){
+            print(details.primaryVelocity);
+            setState(() {
+              color = Colors.black;
+            });
+          },
+          onLongPress: (){
+            setState(() {
+              color = Colors.black12;
+            });
+          },
           child: Container(
-        color: color,
-        width: ScreenUtil().screenWidth,
-        height: ScreenUtil().screenHeight,
-        )
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    )
+            color: color,
+            height: 1920,
+            width: 1080,
+          ),
+        ),
+      ),
     );
   }
 }
