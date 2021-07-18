@@ -74,7 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: (){
             setState(() {
               color = Colors.redAccent;
-              _playFile(); //assets/sample.mp3 재생
+              if(isPlaying == false)
+                  _playFile();
+              else
+                _pauseFile();//assets/sample.mp3 재생
             });
           },
           onDoubleTap: (){
