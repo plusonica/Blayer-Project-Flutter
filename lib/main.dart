@@ -40,7 +40,10 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isPlaying = false;
   bool isPlayedOnce = false;
   double volume = 1; // 기본 볼륨 설정(0부터 1 사이 값만 유효)
-  double volume_interval = 0.2; // 한번 조정할 때마다 0.2씩 볼륨이 바뀜(조정 가능)
+  double volume_interval = 0.01; // 한번 조정할 때마다 0.2씩 볼륨이 바뀜(조정 가능)
+  double speed_interval = 0.02;
+  double gesture_interval = 0.5;
+  int delay_time = 500;
   double speed = 1;
 
   void _playFile() async{
@@ -91,45 +94,27 @@ class _MyHomePageState extends State<MyHomePage> {
           onDoubleTap: (){
             setState(() {
               color = Colors.orangeAccent;
-              speed += 0.1;
+              speed += speed_interval;
               _changeSpeed(speed);
             });
           },
-          onHorizontalDragStart: (DragStartDetails details){
-            setState(() {
-              color = Colors.yellowAccent;
-            });
+          onPanUpdate: (details) {
+            if (details.delta.dy > gesture_interval)
+              setState(() {
+                color = Colors.greenAccent;
+                volume < 1 ? volume += volume_interval : volume = 1;
+                _changeVolume(volume);
+              });
+            else if (details.delta.dy < -gesture_interval)
+              setState(() {
+                color = Colors.lightBlueAccent;
+                volume > 0 ? volume -= volume_interval : volume = 0;
+                _changeVolume(volume);
+              });
           },
-          onHorizontalDragEnd: (DragEndDetails details){
+          onDoubleTapDown: (details) {
             setState(() {
-              color = Colors.greenAccent;
-              volume < 1 ? volume += volume_interval : volume = 1;
-              _changeVolume(volume);
-            });
-          },
-          onVerticalDragStart: (DragStartDetails details){
-            setState(() {
-              color = Colors.blueAccent;
-            });
-          },
-          onVerticalDragEnd: (DragEndDetails details){
-            print(details.primaryVelocity);
-            setState(() {
-              color = Colors.black;
-              volume > 0 ? volume -= volume_interval : volume = 0;
-              _changeVolume(volume);
-            });
-          },
-          onLongPress: (){
-            setState(() {
-              color = Colors.black12;
-              _stopFile(); //중지(오디오 처음으로)
-            });
-          },
-
-          onSecondaryLongPress: () {
-            setState(() {
-              speed -= 0.1;
+              speed > 0.5 ? speed -= speed_interval : speed = 0;
               _changeSpeed(speed);
             });
           },
