@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -48,6 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _playFile() async{
     if (!isPlayedOnce) {
+      _changeVolume(volume);
+      _changeSpeed(speed);
       player = await cache.play(audioPath);
       isPlayedOnce = true;
       isPlaying = true;
@@ -92,31 +95,33 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           },
           onDoubleTap: (){
+          },
+          onLongPress: () {
             setState(() {
-              color = Colors.orangeAccent;
-              speed += speed_interval;
-              _changeSpeed(speed);
+              _stopFile();
             });
           },
           onPanUpdate: (details) {
             if (details.delta.dy > gesture_interval)
               setState(() {
-                color = Colors.greenAccent;
                 volume < 1 ? volume += volume_interval : volume = 1;
                 _changeVolume(volume);
               });
             else if (details.delta.dy < -gesture_interval)
               setState(() {
-                color = Colors.lightBlueAccent;
                 volume > 0 ? volume -= volume_interval : volume = 0;
                 _changeVolume(volume);
               });
-          },
-          onDoubleTapDown: (details) {
-            setState(() {
-              speed > 0.5 ? speed -= speed_interval : speed = 0;
-              _changeSpeed(speed);
-            });
+            if (details.delta.dx > gesture_interval)
+              setState(() {
+                speed < 2 ? speed += speed_interval : speed = 2;
+                _changeSpeed(speed);
+              });
+            else if (details.delta.dx < -gesture_interval)
+              setState(() {
+                speed > 0.5 ? speed -= speed_interval : speed = 0;
+                _changeSpeed(speed);
+              });
           },
 
           child: Container(
