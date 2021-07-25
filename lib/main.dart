@@ -6,9 +6,12 @@ void main() {
   runApp(MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
 
   @override
+
+
   Widget build(BuildContext context) {
 
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -32,10 +35,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   AudioPlayer player = AudioPlayer(); // 오디오 조정에 사용하는 클래스
   AudioCache cache = AudioCache(); // 오디오 로컬 재생(휴대폰)에 사용하는 클래스
+  AudioPlayer player_bell = AudioPlayer();
+  AudioCache cache_bell = AudioCache();
 
 
   Color color = Colors.white;
   String audioPath = "law1.mp3"; // assets 폴더의 sample.mp3 확인
+  String bellPath = "single_bell.mp3";
   bool isPlaying = false;
   bool isPlayedOnce = false;
   double volume = 0.5; // 기본 볼륨 설정(0부터 1 사이 값만 유효)
@@ -45,11 +51,25 @@ class _MyHomePageState extends State<MyHomePage> {
   int delay_time = 500;
   double speed = 1;
 
+  @override
+  void initState() {
+    super.initState();
+    _playBell();
+  }
+
+  _playBell() async{
+    player_bell = await cache_bell.play(this.bellPath);
+  }
+
+  _setFile(String filePath) async{
+    this.audioPath = filePath;
+  }
+
   void _playFile() async{
     if (!isPlayedOnce) {
-      _changeVolume(volume);
-      _changeSpeed(speed);
-      player = await cache.play(audioPath);
+      _changeVolume(this.volume);
+      _changeSpeed(this.speed);
+      player = await cache.play(this.audioPath);
       isPlayedOnce = true;
       isPlaying = true;
     }
