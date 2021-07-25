@@ -1,8 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,9 +38,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String audioPath = "law1.mp3"; // assets 폴더의 sample.mp3 확인
   bool isPlaying = false;
   bool isPlayedOnce = false;
-  double volume = 1; // 기본 볼륨 설정(0부터 1 사이 값만 유효)
-  double volume_interval = 0.01; // 한번 조정할 때마다 0.2씩 볼륨이 바뀜(조정 가능)
-  double speed_interval = 0.02;
+  double volume = 0.5; // 기본 볼륨 설정(0부터 1 사이 값만 유효)
+  double volume_interval = 0.01;
+  double speed_interval = 0.01;
   double gesture_interval = 0.5;
   int delay_time = 500;
   double speed = 1;
@@ -95,6 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           },
           onDoubleTap: (){
+            setState(() {
+              volume = 0.5;
+              _changeVolume(volume);
+              speed = 1;
+              _changeSpeed(speed);
+            });
           },
           onLongPress: () {
             setState(() {
@@ -104,12 +108,12 @@ class _MyHomePageState extends State<MyHomePage> {
           onPanUpdate: (details) {
             if (details.delta.dy > gesture_interval)
               setState(() {
-                volume < 1 ? volume += volume_interval : volume = 1;
+                volume > 0 ? volume -= volume_interval : volume = 0;
                 _changeVolume(volume);
               });
             else if (details.delta.dy < -gesture_interval)
               setState(() {
-                volume > 0 ? volume -= volume_interval : volume = 0;
+                volume < 1 ? volume += volume_interval : volume = 1;
                 _changeVolume(volume);
               });
             if (details.delta.dx > gesture_interval)
@@ -119,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             else if (details.delta.dx < -gesture_interval)
               setState(() {
-                speed > 0.5 ? speed -= speed_interval : speed = 0;
+                speed > 0.5 ? speed -= speed_interval : speed = 0.5;
                 _changeSpeed(speed);
               });
           },
