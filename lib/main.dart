@@ -6,14 +6,9 @@ void main() {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
-
   @override
-
-
   Widget build(BuildContext context) {
-
     SystemChrome.setEnabledSystemUIOverlays([]);
 
     return MaterialApp(
@@ -25,19 +20,17 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-class MyHomePage extends StatefulWidget {
 
+class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   AudioPlayer player = AudioPlayer(); // 오디오 조정에 사용하는 클래스
   AudioCache cache = AudioCache(); // 오디오 로컬 재생(휴대폰)에 사용하는 클래스
   AudioPlayer player_bell = AudioPlayer();
   AudioCache cache_bell = AudioCache();
-
 
   Color color = Colors.white;
   String audioPath = "law1.mp3"; // assets 폴더의 sample.mp3 확인
@@ -54,37 +47,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _playBell();
+    WidgetsBinding.instance!.addObserver(this);
   }
 
-  _playBell() async{
+  _playBell() async {
     player_bell = await cache_bell.play(this.bellPath);
   }
 
-  _setFile(String filePath) async{
+  _setFile(String filePath) async {
     this.audioPath = filePath;
   }
 
-  void _playFile() async{
+  void _playFile() async {
     if (!isPlayedOnce) {
       _changeVolume(this.volume);
       _changeSpeed(this.speed);
       player = await cache.play(this.audioPath);
       isPlayedOnce = true;
       isPlaying = true;
-    }
-    else {
+    } else {
       player.resume();
       isPlaying = true;
     }
   }
 
-  void _stopFile() { // 오디오 멈추는 명령어
+  void _stopFile() {
+    // 오디오 멈추는 명령어
     player.stop();
     isPlaying = false;
   }
 
-  void _pauseFile() { // 오디오 일시정지 명령어
+  void _pauseFile() {
+    // 오디오 일시정지 명령어
     player.pause();
     isPlaying = false;
   }
@@ -98,21 +92,40 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive:
+        print('appLifeCycleState inactive');
+        break;
+      case AppLifecycleState.resumed:
+        _playBell();
+        print('appLifeCycleState resumed');
+        break;
+      case AppLifecycleState.paused:
+        print('appLifeCycleState paused');
+        break;
+      case AppLifecycleState.detached:
+        print('appLifeCycleState detached');
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Center(
         child: GestureDetector(
-          onTap: (){
+          onTap: () {
             setState(() {
               color = Colors.redAccent;
-              if(isPlaying == false)
-                  _playFile();
+              if (isPlaying == false)
+                _playFile();
               else
-                _pauseFile();//assets/sample.mp3 재생
+                _pauseFile(); //assets/sample.mp3 재생
             });
           },
-          onDoubleTap: (){
+          onDoubleTap: () {
             setState(() {
               volume = 0.5;
               _changeVolume(volume);
@@ -147,17 +160,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 _changeSpeed(speed);
               });
           },
-
           child: Container(
-            color: color,
-            height: 1920,
-            width: 1080,
-            child: Column(children: [
-              Text("volume = " + volume.toString()),
-              Text("speed = " + speed.toString()),
-            ])
-          ),
-          ),
+              color: color,
+              height: 1920,
+              width: 1080,
+              child: Column(children: [
+                Text("volume = " + volume.toString()),
+                Text("speed = " + speed.toString()),
+              ])),
+        ),
       ),
     );
   }
