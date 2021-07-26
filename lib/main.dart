@@ -96,17 +96,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.inactive:
-        print('appLifeCycleState inactive');
+        _stopFile();
         break;
       case AppLifecycleState.resumed:
         _playBell();
-        print('appLifeCycleState resumed');
         break;
       case AppLifecycleState.paused:
-        print('appLifeCycleState paused');
         break;
       case AppLifecycleState.detached:
-        print('appLifeCycleState detached');
         break;
     }
   }
