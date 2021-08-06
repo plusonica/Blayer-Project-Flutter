@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setEnabledSystemUIOverlays([]);
 
     return MaterialApp(
-      title: 'Blayer',
+      title: 'law1',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   AudioCache cache_bell = AudioCache();
 
   Color color = Colors.white;
-  String audioPath = "law1.mp3"; // assets 폴더의 sample.mp3 확인
+  String audioPath = "law1.mp3";
   String bellPath = "single_bell.mp3";
   bool isPlaying = false;
   bool isPlayedOnce = false;
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               if (isPlaying == false)
                 _playFile();
               else
-                _pauseFile(); //assets/sample.mp3 재생
+                _pauseFile();
             });
           },
           onDoubleTap: () {
@@ -165,6 +165,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               child: Column(children: [
                 Text("volume = " + volume.toString()),
                 Text("speed = " + speed.toString()),
+                Text("law1"),
               ])),
         ),
       ),
